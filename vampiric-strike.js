@@ -1,3 +1,6 @@
+// requires system: dnd5e and modules: magic items, better rolls 5e
+// foundry v0.8.8
+
 const itemName = 'Gulthias Bow';
 
 const styles = {
@@ -46,7 +49,6 @@ const getSaveDc = item => {
     const chargesDcsMap = new Map();
     chargesDcsMap.set(1, 20).set(2, 16).set(3, 12).set(4, 8);
     const charges = item.data.flags.magicitems.uses;
-    console.log(`charges left: ${charges}`);
     if (charges === 0) {
         ui.notifications.warn(`The ${item.name} is out of charges.`);
         throw (`The ${item.name} is out of charges.`)
@@ -64,7 +66,7 @@ const useVampiricStrike = async (actor, item) => {
     MagicItems.roll(itemName,"Vampiric Strike");
 
     const saveRoll = await BetterRolls.rollSave(actor, "wis");
-    // console.log(saveRoll);
+    // does BetterRolls have another way of getting this value?
     const saveResult = saveRoll.data.flags.betterrolls5e.entries[1].entries[0].total;
     let saveMessage = `<div style=${inline(styles.saveDc)}>Save DC: ${saveDc}</div>`;
 
@@ -90,7 +92,6 @@ if (!actor) {
         ui.notifications.warn(`Can't find the ${itemName}; do you have the right token selected?`);
     } else {
         const item = actor.items.get(foundItem.id);
-        console.log(item);
 
         try {
             await useVampiricStrike(actor, item);
